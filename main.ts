@@ -34,7 +34,9 @@ function plotGraph () {
     let yAxis: number
     let yAxis_interval: number
 
-    if (max_value < 50) {
+    if (max_value < 15) {
+        yAxis_interval = 3 
+    } else if (max_value < 50) {
         yAxis_interval = 10
     } else if (max_value < 75) {
         yAxis_interval = 15
@@ -110,6 +112,7 @@ radio.onReceivedNumber(function(receivedNumber: number) {
         total_count++
         plotGraph()
         ix = 0
+        max_value = 0
     }
     ix++
     
