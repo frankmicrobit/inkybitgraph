@@ -14,6 +14,7 @@ let max_value: number = 0
 let values: number[] = []
 let text_start_pos: number = 0
 let CurIX: number = 0
+let yAxisText: string = ''
 
 inkybit.init()
 inkybit.clear()
@@ -26,7 +27,7 @@ function plotGraph () {
     
     inkybit.clear()
     // Draw the lines
-    for (let y = 120; y > 0; y = y - 20) {
+    for (let y = 120; y > 0; y = y - 40) {
         inkybit.drawLine(20, y, 249, y, inkybit.Color.Accent)
     }
 
@@ -55,13 +56,16 @@ function plotGraph () {
     } else if (max_value < 5000) {
         yAxis_interval = 1000
     }
+    yAxis_interval =1
 
+    // Plot the axis (10-15v)
     inkybit.setPixelSize(1)
-    top_y_axis_value = yAxis_interval * 5
-    for (let y2 = 0; y2 <= 5; y2++) {
-        yAxis = y2 * yAxis_interval
-        text_start_pos = inkybit.measureText(top_y_axis_value.toString(), 1) - inkybit.measureText(yAxis.toString(), 1)
-        inkybit.drawText(yAxis.toString() + 'v', text_start_pos, ((6-y2)*20)-5, inkybit.Color.Accent, 1)
+    top_y_axis_value = yAxis_interval * 3 + 11
+    for (let y2 = 0; y2 <= 3; y2++) {
+        yAxis = y2 + 11
+        yAxisText = yAxis.toString() + 'v'
+        text_start_pos = inkybit.measureText(top_y_axis_value.toString() + 'v', 1) - inkybit.measureText(yAxis.toString() + 'v', 1)
+        inkybit.drawText(yAxis.toString() + 'v', text_start_pos, ((3-y2)*40)-5, inkybit.Color.Accent, 1)
     }
 
     // Plot the bars
@@ -71,7 +75,7 @@ function plotGraph () {
             color = inkybit.Color.Accent
         else    
             color = inkybit.Color.Black
-        inkybit.drawRectangle(x * 5 + 20, Math.round(120 - ((values[x - 1] * 20) / yAxis_interval)), 2, Math.round(((values[x - 1] * 20) / yAxis_interval)), color, true)
+        inkybit.drawRectangle(x * 5 + 20, Math.round(120 - (((values[x - 1] - 11) * 40) / yAxis_interval)), 2, Math.round((((values[x - 1] - 11) * 40) / yAxis_interval)), color, true)
     }
     inkybit.show()
 }
