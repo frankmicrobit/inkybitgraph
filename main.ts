@@ -13,7 +13,7 @@ let top_y_axis_value = 0
 let max_value: number = 0
 let values: number[] = []
 let text_start_pos: number = 0
-let CurIX: number = 1
+let CurIX: number = 0
 
 inkybit.init()
 inkybit.clear()
@@ -61,7 +61,7 @@ function plotGraph () {
     for (let y2 = 0; y2 <= 5; y2++) {
         yAxis = y2 * yAxis_interval
         text_start_pos = inkybit.measureText(top_y_axis_value.toString(), 1) - inkybit.measureText(yAxis.toString(), 1)
-        inkybit.drawText(yAxis.toString(), text_start_pos, ((6-y2)*20)-5, inkybit.Color.Accent, 1)
+        inkybit.drawText(yAxis.toString() + 'v', text_start_pos, ((6-y2)*20)-5, inkybit.Color.Accent, 1)
     }
 
     // Plot the bars
