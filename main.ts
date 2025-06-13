@@ -1,20 +1,15 @@
 // JavaScript edition of barplotter
 // Better version written in Python in Mu
 
-// for (let i = 0; i < 24; i++){
-// values.set(i, randint(0, 2000))
-// if (values[i] > max_value)
-// max_value = values[i]
-// if (i == 23)
-// plotGraph()
-// }
 let ix = 0
 let top_y_axis_value = 0
-let max_value: number = 0
+let max_value: number = 14
 let values: number[] = []
 let text_start_pos: number = 0
 let CurIX: number = 0
 let yAxisText: string = ''
+let max_count = 40
+let total_count = 0
 
 inkybit.init()
 inkybit.clear()
@@ -22,14 +17,12 @@ inkybit.show()
 radio.setGroup(100)
 
 function plotGraph () {
-    basic.showNumber(total_count)
-//    return
-    
     inkybit.clear()
     // Draw the lines
     for (let y = 120; y > 0; y = y - 40) {
         inkybit.drawLine(20, y, 249, y, inkybit.Color.Accent)
     }
+
 
     // Scale the y-axis
     let yAxis: number
@@ -68,58 +61,60 @@ function plotGraph () {
         inkybit.drawText(yAxis.toString() + 'v', text_start_pos, ((3-y2)*40)-5, inkybit.Color.Accent, 1)
     }
 
+
     // Plot the bars
     let color: inkybit.Color
-    for (let x = 1; x < 49; x++) {
-        if (x==CurIX)
+    for (let x = 1; x < max_count; x++) {
+        if (values[x - 1] < 12)
             color = inkybit.Color.Accent
         else    
             color = inkybit.Color.Black
         inkybit.drawRectangle(x * 5 + 20, Math.round(120 - (((values[x - 1] - 11) * 40) / yAxis_interval)), 2, Math.round((((values[x - 1] - 11) * 40) / yAxis_interval)), color, true)
     }
+    
     inkybit.show()
 }
 
-/*
-radio.onReceivedValue(function (name, value) {
-    if (name == "CurIX"){
-        CurIX = value
-    } else {
-        ix = parseInt(name)
-        if (ix == 0) {
-            max_value = 0
-        }
-        values.set(ix, value)
-        if (values[ix] > max_value) {
-            max_value = values[ix]
-        }
-        if (ix == 47) {
-            plotGraph()
+
+radio.onReceivedNumber(function(receivedNumber: number) {
+    receivedNumber = receivedNumber + 0.5 
+    if (ix == 0) {
+        //basic.showString('Nullstill', 100)
+        for (let i = 0; i < max_count-1; i++) {
+            values.set(i, 12)
         }
     }
-})
+
+    if (ix == max_count) {
+        basic.showString('Skift', 100)
+        for (let i = 1; i < max_count; i++) {
+            values.set(i-1, values[i])
+        }
+        //basic.showNumber(ix)
+        values.set(ix-1, receivedNumber)
+    } 
+    else
+    {
+        //basic.showString('+', 100)
+        //basic.showNumber(ix)
+        values.set(ix, receivedNumber)
+        ix++
+    }
+
+/*
+    if (receivedNumber > max_value) {
+        max_value = receivedNumber
+    }
 */
 
-let total_count = 0
-radio.onReceivedNumber(function(receivedNumber: number) {
-    if (ix == 0) {
-        max_value = 0
-        for (let i=0; i < values.length; i++){
-            values.pop()
-        }
+    /*
+    for (let i = 0; i < max_count; i++) {
+        values.set(i, receivedNumber)
     }
-    values.set(ix, receivedNumber)
-    if (values[ix] > max_value) {
-        max_value = values[ix]
-    }
-    if (ix == 47) {
-        total_count++
-        plotGraph()
-        ix = 0
-        max_value = 0
-    }
-    ix++
-    
+    */
+    plotGraph()
+    //basic.showNumber(receivedNumber)
+    total_count++
 })
 
 
