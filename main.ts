@@ -10,6 +10,8 @@ let CurIX: number = 0
 let yAxisText: string = ''
 let max_count = 40
 let total_count = 0
+let num_accumulations = 50
+let accumulation = 0
 
 inkybit.init()
 inkybit.clear()
@@ -77,7 +79,9 @@ function plotGraph () {
 
 
 radio.onReceivedNumber(function(receivedNumber: number) {
-    if (total_count < 50) {
+    receivedNumber = receivedNumber - 0.2
+    accumulation = accumulation + receivedNumber;
+    if (total_count < num_accumulations) {
         total_count++
         
         if (receivedNumber >= 13) {
@@ -150,14 +154,15 @@ radio.onReceivedNumber(function(receivedNumber: number) {
         for (let i = 1; i < max_count+1; i++) {
             values.set(i-1, values[i])
         }
-        //basic.showNumber(ix)
-        values.set(ix-1, receivedNumber)
+        // Avrage of last (num_accumulations samples)
+        values.set(ix - 1, accumulation / num_accumulations)
     } 
     else
     {
         //basic.showString('+', 100)
         //basic.showNumber(ix)
-        values.set(ix, receivedNumber)
+        // Avrage of last (num_accumulations samples)
+        values.set(ix, accumulation / num_accumulations)
         ix++
     }
 
