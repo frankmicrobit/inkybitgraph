@@ -12,11 +12,33 @@ let max_count = 40
 let total_count = 0
 let num_accumulations = 50
 let accumulation = 0
+let average = 0
+let low = 10000
+let heigh = 0
 
 inkybit.init()
 inkybit.clear()
 inkybit.show()
 radio.setGroup(100)
+
+
+input.onButtonPressed(Button.A, function() {
+    basic.showNumber(average)
+    basic.pause(500)
+})
+
+input.onButtonPressed(Button.B, function () {
+    basic.showString('Min ')
+    basic.showNumber(low)
+    basic.showString('Max ')
+    basic.showNumber(heigh)
+})
+
+input.onButtonPressed(Button.AB, function () {
+    low = 10000
+    heigh = 0
+})
+
 
 function plotGraph () {
     inkybit.clear()
@@ -140,35 +162,44 @@ radio.onReceivedNumber(function(receivedNumber: number) {
         }
 
     } else {
+        // Beregn snitt av siste n (num_accumulations) målinger
+        average = accumulation / (num_accumulations+1);
+        if (average < low)
+            low = average;
+
+        // Beregn lav og høy
+        if (average > heigh)
+            heigh = average
+                
         total_count = 0
     
-    if (ix == 0) {
-        //basic.showString('Nullstill', 100)
-        for (let i = 0; i < max_count-1; i++) {
-            values.set(i, 0)
+        if (ix == 0) {
+            //basic.showString('Nullstill', 100)
+            for (let i = 0; i < max_count-1; i++) {
+                values.set(i, 0)
+            }
         }
-    }
 
-    if (ix == max_count-1) {
-        //basic.showString('Skift', 100)
-        for (let i = 1; i < max_count+1; i++) {
-            values.set(i-1, values[i])
+        if (ix == max_count-1) {
+            //basic.showString('Skift', 100)
+            for (let i = 1; i < max_count+1; i++) {
+                values.set(i-1, values[i])
+            }
+            // Avrage of last (num_accumulations samples)
+            values.set(ix - 1, average)
+        } 
+        else
+        {
+            //basic.showString('+', 100)
+            //basic.showNumber(ix)
+            // Avrage of last (num_accumulations samples)
+            values.set(ix, average)
+            ix++
         }
-        // Avrage of last (num_accumulations samples)
-        values.set(ix - 1, accumulation / num_accumulations)
-    } 
-    else
-    {
-        //basic.showString('+', 100)
-        //basic.showNumber(ix)
-        // Avrage of last (num_accumulations samples)
-        values.set(ix, accumulation / num_accumulations)
-        ix++
-    }
 
-    plotGraph()
-    basic.showNumber(receivedNumber)
- 
+        plotGraph()
+        //basic.showNumber(average)
+        accumulation = 0
     }
 })
 
