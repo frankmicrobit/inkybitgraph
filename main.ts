@@ -77,17 +77,77 @@ function plotGraph () {
 
 
 radio.onReceivedNumber(function(receivedNumber: number) {
-    receivedNumber = receivedNumber + 0.5 
+    if (total_count < 50) {
+        total_count++
+        
+        if (receivedNumber >= 13) {
+            basic.showLeds(`
+            . # # # .
+            . # # # .
+            . # # # .
+            . # # # .
+            . # # # .
+            `)
+        }
+        else if (receivedNumber >= 12.5) {
+            basic.showLeds(`
+            . . . . .
+            . # # # .
+            . # # # .
+            . # # # .
+            . # # # .
+            `);
+        }
+        else if (receivedNumber >= 12.0) {
+            basic.showLeds(`
+            . . . . .
+            . . . . .
+            . # # # .
+            . # # # .
+            . # # # .
+            `);
+        }
+        else if (receivedNumber >= 11.5) {
+            basic.showLeds(`
+             . . . . .
+             . . . . .
+             . . . . .
+             . # # # .
+             . # # # .
+            `);
+        }
+        else if (receivedNumber >= 11.0) {
+                basic.showLeds(`
+             . . . . .
+             . . . . .
+             . . . . .
+             . . . . .
+             . # # # .
+            `);
+        }
+        else {
+            basic.showLeds(`
+             . . . . .
+             . # . # .
+             . . # . .
+             . # . # .
+             . . . . .
+            `);
+        }
+
+    } else {
+        total_count = 0
+    
     if (ix == 0) {
         //basic.showString('Nullstill', 100)
         for (let i = 0; i < max_count-1; i++) {
-            values.set(i, 12)
+            values.set(i, 0)
         }
     }
 
-    if (ix == max_count) {
-        basic.showString('Skift', 100)
-        for (let i = 1; i < max_count; i++) {
+    if (ix == max_count-1) {
+        //basic.showString('Skift', 100)
+        for (let i = 1; i < max_count+1; i++) {
             values.set(i-1, values[i])
         }
         //basic.showNumber(ix)
@@ -101,22 +161,11 @@ radio.onReceivedNumber(function(receivedNumber: number) {
         ix++
     }
 
-/*
-    if (receivedNumber > max_value) {
-        max_value = receivedNumber
-    }
-*/
-
-    /*
-    for (let i = 0; i < max_count; i++) {
-        values.set(i, receivedNumber)
-    }
-    */
     plotGraph()
-    //basic.showNumber(receivedNumber)
-    total_count++
+    basic.showNumber(receivedNumber)
+ 
+    }
 })
-
 
 
 basic.forever(function () {
